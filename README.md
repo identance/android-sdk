@@ -50,10 +50,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-maven { url 'http://maven.microblink.com' }
-maven {
-    url 'https://github.com/...'
-}
 
 dependencies {
     api 'com.identance:sdk:{latest}'
@@ -65,7 +61,7 @@ dependencies {
 Add next code to your App class:
 
 ```java
-public class MyApplication extends SomeOtherApplication {
+public class MyApplication extends Application {
   
     @Override
     public void onCreate() {
@@ -74,7 +70,6 @@ public class MyApplication extends SomeOtherApplication {
         VerificationBuilder builder = new VerificationBuilder(this)
             .setUserId("userId")
             .setEndpoint("https://...")
-            .setNightMode()  
             .addTokenProvider(() -> "Java web token, should be provided by merchant");
             
         VerificationClient client = builder.build();
@@ -111,12 +106,15 @@ android {
 In place where your want to start verification, put:
 
 ```java
-VerificationClient.getInstance().start(activity, REQUEST_CODE);
+VerificationClient.getInstance().start(activity, REQUEST_CODE, verificationMode);
+
+//or
+VerificationClient.getInstance().start(fragment, REQUEST_CODE, verificationMode);
 ```
-or
-```java
-VerificationClient.getInstance().start(fragment, REQUEST_CODE);
-```
+| Verification modes         |
+|--------------|
+| ALL_STAGES   |
+| SINGLE_STAGE |
 
 ### Interrupting of verification process:
 
