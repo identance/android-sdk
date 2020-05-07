@@ -8,30 +8,8 @@ Identance is a intelligible, user-friendly service of user's verification provid
 
 ## Integration
 
-### Integration via Maven
-[Android Maven Plugin v4.0.0](https://simpligility.github.io/android-maven-plugin/) or newer is required.
-
-Open your pom.xml file and add these directives as appropriate:
-
-```xml
-<repositories>
-    <repository>
-        <id>Identance</id>
-        <url>https://github.com/...</url>
-    </repository>
-</repositories>
-
-<dependency>
-    <groupId>com.identance</groupId>
-        <artifactId>sdk</artifactId>
-        <version>latest</version>
-</dependency>
-```
-
-### Android studio integration
-
 There are 2 ways how to integrate SDK
-1) **Directly download** the latest [AAR](https://github.com/...), and insert it into libs folder of app module. Make sure you included libraries from libs folder:
+1) **Directly download** the latest [AAR](https://github.com/identance/android-sdk), and insert it into libs folder of app module. Make sure you included libraries from libs folder:
 
 ```groovy
 dependencies {
@@ -40,6 +18,27 @@ dependencies {
 ```
 
 2) Via **Gradle**
+
+### Step 1 : Generate a Personal Access Token for GitHub
+* Inside you GitHub account:
+* Settings -> Developer Settings -> Personal Access Tokens -> Generate new token
+* Make sure you select the following scopes (“ read:packages”) and Generate a token
+* After Generating make sure to copy your new personal access token. You cannot see it again! The only option is to generate a new key.
+
+### Step 2: Store your GitHub — Personal Access Token details
+* Create a <strong>github.properties</strong> file within your root Android project and add properties:
+```groovy
+   gpr.usr=GITHUB_USERID  
+   gpr.key=PERSONAL_ACCESS_TOKEN
+```
+
+* Make sure you add this file to <strong>.gitignore</strong> for keep the token private
+* Replace ```GITHUB_USERID``` with Github User ID and ```PERSONAL_ACCESS_TOKEN``` with the token generated in **#Step 1**
+
+> Alternatively you can also add the ```GITHUB_USERID``` and ```PERSONAL_ACCESS_TOKEN``` values to your environment variables on you local machine or build server to avoid creating a github properties file
+
+### Step 3 : Update build.gradle inside the application module
+* Add the following code to build.gradle inside the app module
 
 ```groovy
 android {
@@ -51,8 +50,21 @@ android {
     }
 }
 
+def githubProperties = new Properties() githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+
+repositories {
+    maven {
+        url 'https://maven.pkg.github.com/identance/android-sdk'
+
+        credentials {
+            username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+            password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+        }
+    }
+}
+
 dependencies {
-    api 'com.identance:sdk:{latest}'
+    implementation 'com.identance:sdk:{latest}'
 }
 ```
 
@@ -89,14 +101,14 @@ or
 ```
 
 ### Localization
-SDK supports different languages. In case you don't want to use some of them, limit language resources in your application.  Update your **build.gradle**
+SDK supports different languages (English, Russian, at this moment). In case you don't want to use some of them, limit language resources in your application.  Update your **build.gradle**
 ```groovy
 android {
     //...
 
     defaultConfig {
         ///...
-        resConfig "en", "fr"
+        resConfig "en"
     }
 }
 ```
@@ -109,12 +121,16 @@ In place where your want to start verification, put:
 VerificationClient.getInstance().start(activity, REQUEST_CODE, verificationMode);
 
 //or
-VerificationClient.getInstance().start(fragment, REQUEST_CODE, verificationMode);
+VerificationClient.getInstance().start(activity, REQUEST_CODE, verificationMode);
 ```
-| Verification modes         |
-|--------------|
-| ALL_STAGES   |
-| SINGLE_STAGE |
+
+where ```verificationMode``` could be one of possible values
+
+| Verification modes         | description |
+|--------------|--------------|
+| ALL_STAGES   | Verification starts from the list of all available stages |
+| SINGLE_STAGE | Verification starts from the passing of the first available stage
+
 
 ### Interrupting of verification process:
 
