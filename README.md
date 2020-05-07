@@ -50,7 +50,8 @@ android {
     }
 }
 
-def githubProperties = new Properties() githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
+def githubProperties = new Properties() 
+githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 
 repositories {
     maven {
