@@ -9,23 +9,23 @@ Identance is a intelligible, user-friendly service of user's verification provid
 ## Integration
 
 There are 2 ways how to integrate SDK
-1) **Directly download** the latest [AAR](https://github.com/identance/android-sdk), and insert it into libs folder of app module. Make sure you included libraries from libs folder:
-
+#### 1) **Directly download**
+Download the latest [AAR](https://github.com/identance/android-sdk), and insert it into libs folder of app module. Make sure you included libraries from libs folder:
 ```groovy
 dependencies {
     implementation fileTree(include: ['*.aar'], dir: 'libs')
 }
 ```
 
-2) Via **Gradle**
+#### 2) Via **Gradle**
 
-### Step 1 : Generate a Personal Access Token for GitHub
+##### Step 1 : Generate a Personal Access Token for GitHub
 * Inside you GitHub account:
 * Settings -> Developer Settings -> Personal Access Tokens -> Generate new token
 * Make sure you select the following scopes (“ read:packages”) and Generate a token
 * After Generating make sure to copy your new personal access token. You cannot see it again! The only option is to generate a new key.
 
-### Step 2: Store your GitHub — Personal Access Token details
+##### Step 2: Store your GitHub — Personal Access Token details
 * Create a <strong>github.properties</strong> file within your root Android project and add properties:
 ```groovy
    gpr.usr=GITHUB_USERID  
@@ -37,7 +37,7 @@ dependencies {
 
 > Alternatively you can also add the ```GITHUB_USERID``` and ```PERSONAL_ACCESS_TOKEN``` values to your environment variables on you local machine or build server to avoid creating a github properties file
 
-### Step 3 : Update build.gradle inside the application module
+##### Step 3 : Update build.gradle inside the application module
 * Add the following code to build.gradle inside the app module
 
 ```groovy
@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.identance:sdk:{latest}'
+    implementation 'com.identance:sdk:2.0.7'
 }
 ```
 
