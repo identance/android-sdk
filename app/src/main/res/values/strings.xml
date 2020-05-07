@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Identance sample</string>
+    <string name="this_is_a_sample_application">This is a sample application</string>
+    <string name="start_verification">Start Verification</string>
+</resources>
