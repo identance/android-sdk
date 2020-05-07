@@ -35,7 +35,7 @@ dependencies {
 * Make sure you add this file to <strong>.gitignore</strong> for keep the token private
 * Replace ```GITHUB_USERID``` with Github User ID and ```PERSONAL_ACCESS_TOKEN``` with the token generated in **#Step 1**
 
-> Alternatively you can also add the ```GITHUB_USERID``` and ```PERSONAL_ACCESS_TOKEN``` values to your environment variables on you local machine or build server to avoid creating a github properties file
+> Alternatively you can also add the ```gpr.usr``` and ```gpr.key``` values to your environment variables on you local machine or build server to avoid creating a github properties file
 
 ##### Step 3 : Update build.gradle inside the application module
 * Add the following code to build.gradle inside the app module
@@ -118,10 +118,10 @@ android {
 In place where your want to start verification, put:
 
 ```java
-VerificationClient.getInstance().start(activity, REQUEST_CODE, verificationMode);
+VerificationClient.getInstance().start(activity, verificationMode);
 
 //or
-VerificationClient.getInstance().start(activity, REQUEST_CODE, verificationMode);
+VerificationClient.getInstance().startForResult(activity, REQUEST_CODE, verificationMode);
 ```
 
 where ```verificationMode``` could be one of possible values
