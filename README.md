@@ -113,6 +113,9 @@ android {
     }
 }
 ```
+**WARNING!**
+Because of SDK keeps reference of TokenProvider, VerificationClient should be re-initialized right after a new user has logged in
+
 
 ### Launching of verification process
 
@@ -120,9 +123,6 @@ In place where your want to start verification, put:
 
 ```java
 VerificationClient.getInstance().start(activity, verificationMode);
-
-//or
-VerificationClient.getInstance().startForResult(activity, REQUEST_CODE, verificationMode);
 ```
 
 where ```verificationMode``` could be one of possible values
@@ -132,13 +132,60 @@ where ```verificationMode``` could be one of possible values
 | ALL_STAGES   | Verification starts from the list of all available stages |
 | SINGLE_STAGE | Verification starts from the passing of the first available stage
 
-
-### Interrupting of verification process:
-
+In case you need to get a result of verification
 ```java
-VerificationClient.getInstance().interrupt(context);
+    VerificationClient.getInstance().startForResult(activity, REQUEST_CODE, verificationMode);
 ```
 
-Caution!!!
-----
-Because of SDK keeps reference of TokenProvider, VerificationClient should be re-initialized right after a new user has logged in
+Also, add next code to activity/fragment where you start verification from
+```java
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == REQUEST_CODE) {
+		    switch (status) {
+                case VerificationStatus.CANCELED:
+                    // your code here
+                    break;
+                case VerificationStatus.SUBMITTED:
+                    HashMap<String, String> stages;
+                    stages = (HashMap<String, String>) data.getSerializableExtra(VerificationClient.EXTRAS_RESULT_VERIFICATION);
+                    // your code here
+                    break;
+                case VerificationStatus.REJECTED:
+                    // your code here
+                    break;
+                default:
+                    // your code here
+                    break;
+            }
+		}
+
+}
+```
+
+| Verification status         | all_stages mode | single_stage mode
+|--------------|--------------|--------------|
+| CANCELED| User exited without passing any stage | User exited without passing any stage
+| SUBMITTED| User passed some stage with any result or reseted previous results | User passed verification successfully
+| REJECTED| User's dossier were completely rejected after passing stage | user failed to pass a stage
+
+In case verification were finished with status ```SUBMITTED```, you also could obtain a results of
+verification in ```HashMap<String, String>```, where key is ```stage_id``` and value is ```stage_status```
+
+**WARNING!**
+Do not use results from SDK in all_stages mode for building business logic in your application
+in case when manual processing of verification is enabled.
+For this case the best decision is to implement notifications of results on backend side and send them to your mobile application
+
+#### Possible stage statuses
+| Stage status         | Description
+|--------------|--------------|
+| draft| new stage, user do not provide any information so far
+| pending| there is no final decision on application
+| correction| user has to provide updated information to the initial application
+| accepted| final decision, user has successfully passed verification
+| refused| final decision, user has not passed verification
+| next_stage_needed| user has to send subsequent stage of verification
+| current_stage_needed| user is obliged by CO to provide information on specific stage of verification
+| inpogress| user has submitted stage and it is still processing on backend(not saved to db)
