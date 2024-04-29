@@ -153,10 +153,11 @@ VerificationClient.getInstance().start(activity,verificationMode);
 
 where ```verificationMode``` could be one of possible values
 
-| Verification modes         | description |
-|--------------|--------------|
-| ALL_STAGES   | Verification starts from the list of all available stages |
-| SINGLE_STAGE | Verification starts from the passing of the first available stage
+| Verification modes | description |
+|--------------------|--------------|
+| ALL_STAGES         | Verification starts from the list of all available stages |
+| SINGLE_STAGE       | Verification starts from the passing of the first available stage
+| RESUBMIT_STAGE     | Verification starts from the resubmit screen
 
 In case you need to get a result of verification
 
@@ -192,7 +193,7 @@ default:
 		}
 ```
 
-| Verification status         | all_stages mode | single_stage mode
+| Verification status         | all_stages mode | single_stage mode | resubmit_stage mode
 |--------------|--------------|--------------|
 | CANCELED| User exited without passing any stage | User exited without passing any stage
 | SUBMITTED| User passed some stage with any result or reseted previous results | User passed verification successfully
